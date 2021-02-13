@@ -1,0 +1,35 @@
+{
+  "name": "instagram-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korenwo/instagram-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/korenwo/instagram-api/issues"
+  },
+  "homepage": "https://github.com/korenwo/instagram-api#readme",
+  "devDependencies": {
+    "mongoose": "^5.11.14",
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "5": "0.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mb": "^1.0.0",
+    "md": "^0.6.0",
+    "md5": "^2.3.0",
+    "mogoose": "0.0.1-security"
+  }
+}
