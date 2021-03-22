@@ -1,5 +1,5 @@
 module.exports = {
     jwtSecret: "Koren123",
-    port: process.env.port,
+    port: process.env.PORT,
     dbUrl: process.env.DB_URL
 };
