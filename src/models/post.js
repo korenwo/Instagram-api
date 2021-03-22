@@ -16,10 +16,11 @@ const Post = mongoose.model('Post', {
         required:true,
         default:()=> new Date()
     },
-    likes: {
-        type: Number,
-        default:0
+    like: {
+        type: [mongoose.ObjectId],
+        default:[]
     }
+
 });
 
 module.exports= Post;

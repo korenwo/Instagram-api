@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const Post = require ('../models/post');
+const Comment = require ('../models/Comment');
 
 class PostsController {
 
@@ -49,17 +50,27 @@ class PostsController {
         }
     }
 
-    static async like (req, res) {
-        try {
-            const post= await Post.findById(req.params.id);
-            post.likes++;
-            const createdPost = await post.save();
-            res.status(201).send(createdPost);
+    static async like(req, res) {
+        const postId = req.params.id;
+        const likeUserId = req.user._id;
+        const post = await Post.findOneAndUpdate(
+            postId,
+            {
+                $addToSet: {
+                    likes: likeUserId
+                }
+            },
+            {
+                new: true
+            }
+        );
+        if (!post) {
+            res.sendStatus(404);
+            return;
         }
-        catch(err) {
-            console.log(err);
-            res.sendStatus(500);
-        }
+        res.send(
+            post
+        );
     }
 
     static async addComment(req, res) {

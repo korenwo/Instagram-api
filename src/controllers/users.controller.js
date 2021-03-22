@@ -1,8 +1,9 @@
 const md5 = require('md5');
 const User = require('../models/user');
+const Post = require('../models/post');
 const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config/environment/index');
-const Post = require('../models/post');
+
 
 class UsersController {
 
@@ -56,10 +57,87 @@ class UsersController {
         }catch(err) {
             res.status(400).json(err);
         }
-    }    
+    }
 
     static me (req, res) {
        res.send(req.user);
+    }
+
+    static async posts(req, res) {
+		const { username } = req.params;
+		try {
+			const user = await User.findOne({ username });
+			if (!user) {
+				res.sendStatus(404);
+				return;
+			}
+			const posts = await Post
+				.find({ userId: user._id })
+				.populate('user', ['username', 'avatar']);
+			res.json(posts);
+		} catch (err) {
+			console.log(err);
+			res.sendStatus(500);
+		}
+	}
+
+     static async get (req, res) {
+        const { username } = req.params;
+        try {
+            const user = await User.findOne({username});
+            if (!user) {
+                res.sendStatus(404);
+                return;
+            }
+            res.json(user);
+        } catch(err) {
+            console.log(err);
+            res.sendStatus(500);
+        }
+    }
+
+    
+    
+    static getAll(req, res) {
+        const { username } = req.query;
+			try {
+                const users = User.find({
+                    username: new RegExp(username, 'i')
+                });
+                res.json(users);
+            } catch (err) {
+                res.sendStatus(500);
+            }
+        }
+
+    static async follow(req, res) {
+        const userId = req.params.id;
+        const followerUserId = req.user._id;
+        if (userId === followerUserId) {
+            res.sendStatus(400);
+            return;
+        }
+        const user = await User.findOneAndUpdate(
+            userId,
+            {
+                $addToSet: {
+                    followers: followerUserId
+                }
+            },
+            {
+                new: true
+            }
+        );
+        if (!user) {
+            res.sendStatus(404);
+            return;
+        }
+        res.send({
+            _id: user._id,
+            username: user.username,
+            avatar: user.avatar,
+            followers: user.followers
+        });
     }
 
     static edit (req, res) {
@@ -73,89 +151,6 @@ class UsersController {
             });
     } 
 
-    static async posts (req, res) {
-       const {username}= req.params;
-       try {
-           const user = await User.findOne({ username });
-           if(!user) {
-               res.sendStatus(404);
-               return;
-           }
-           const Posts = await Posts
-           .find({ user: user._id })
-           .populate('user', ['username', 'koren']);
-           res.json(posts);
-       } catch (err) {
-           console.log(err);
-           res.sendStatus(500);
-       }
-    }
-
-    static async get (req, res) {
-        const { username } = req.params;
-        try {
-            const user = await User.findOne({username});
-            if (!user) {
-                res.sendStatus(404);
-                return;
-            }
-            const {_id, avatar } = user;
-            res.json({_id, usernme, avatar});
-        } catch(err) {
-            console.log(err);
-            res.sendStatus(500);
-        }
-    }
-
-    static getAll(req, res) {
-        const { username } = req.query;
-			try {
-                const user = User.find({
-                username: new RegExp(username, 'i')
-                });
-                    res.json(users.map(user=> ({
-                            _id: user._id,
-                            username:user.username,
-                            avatar:user.avatar,
-                            bio: user.bio,
-                            creatAt: user.creatAt    
-                        })));
-                } catch (err) {
-                res.sendStatus(500);
-
-            }
-    }
-    
-        static async follow (req, res) {
-           
-            const followerUserId = req.user._id;
-            if (userId === followerUserId) {
-                res.sendStatus(400);
-                return;
-            }
-            const user = await User.findOneAndUpdate(
-                userId,
-                {
-                   $addToSet: {
-                       followers: followerUserId
-                   } 
-                },
-                {
-                    new: true
-                }
-            );
-            if (!user) {
-                res.sendStatus(404);
-                return;
-            }
-            res.send({
-                _id: user._id,
-                username: user.username,
-                avatar: user.avatar,
-                followers: user.followers
-        });
-        
-    }
 }   
 
 module.exports = UsersController;

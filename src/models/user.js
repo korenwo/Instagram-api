@@ -17,6 +17,7 @@ const User = mongoose.model('User', {
     },
     bio: String,
     avatar: String,
+    followers: [mongoose.ObjectId],
     creatAt: {
         type: Date,
         required: true,
