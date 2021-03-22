@@ -16,7 +16,7 @@ const Post = mongoose.model('Post', {
         required:true,
         default:()=> new Date()
     },
-    like: {
+    likes: {
         type: [mongoose.ObjectId],
         default:[]
     }
