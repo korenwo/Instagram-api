@@ -49,7 +49,7 @@ class UsersController {
         let property = email ? 'email' : 'username';
 
         try {
-            user.exists({
+            User.exists({
                 [property]: req.query[property]
             }).then(isExist => {
                 res.json(isExist);
@@ -72,7 +72,7 @@ class UsersController {
 				return;
 			}
 			const posts = await Post
-				.find({ userId: user._id })
+				.find({ user: user._id })
 				.populate('user', ['username', 'avatar']);
 			res.json(posts);
 		} catch (err) {
@@ -89,7 +89,8 @@ class UsersController {
                 res.sendStatus(404);
                 return;
             }
-            res.json(user);
+            const {_id, avatar } = user;
+            res.json({_id, username, avatar });
         } catch(err) {
             console.log(err);
             res.sendStatus(500);
@@ -101,11 +102,18 @@ class UsersController {
     static getAll(req, res) {
         const { username } = req.query;
 			try {
-                const users = User.find({
+                const users =  User.find({
                     username: new RegExp(username, 'i')
                 });
-                res.json(users);
+                res.json(users.map(user => ({
+                    _id: user._id,
+                    username: user.username,
+                    avatar: user.avatar,
+                    bio: user.bio,
+                    createdAt: user.createdAt
+                })));
             } catch (err) {
+                console.log(err);
                 res.sendStatus(500);
             }
         }

@@ -4,7 +4,6 @@ const User = mongoose.model('User', {
     username: {
         type: String,
         required: true,
-        unique: true
     },
     password:{
         type: String,
@@ -13,7 +12,6 @@ const User = mongoose.model('User', {
     email: {
         type:String,
         required:true,
-        unique: true
     },
     bio: String,
     avatar: String,
@@ -25,4 +23,4 @@ const User = mongoose.model('User', {
     }
 });
 
-module.exports= User;
+module.exports = User;
