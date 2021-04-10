@@ -21,7 +21,7 @@ routes.get('/post', auth, PostsController.feed);
 routes.put('/post/:id/comment',auth, PostsController.addComment);
 routes.put('/post', auth, upload.single('image'), PostsController.create);
 routes.get('/post/:id', auth, PostsController.get);
-routes.post('/posts/:id/like', PostsController.like);
+routes.post('/posts/:id/like', auth, PostsController.like);
 
 routes.get('/', (req, res) => res.send());
 

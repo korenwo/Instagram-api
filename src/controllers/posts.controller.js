@@ -53,7 +53,7 @@ class PostsController {
     static async like(req, res) {
         const postId = req.params.id;
         const likeUserId = req.user._id;
-        const post = await Post.findOneAndUpdate(
+        const post = await Post.findByIdAndUpdate(
             postId,
             {
                 $addToSet: {
@@ -68,9 +68,7 @@ class PostsController {
             res.sendStatus(404);
             return;
         }
-        res.send(
-            post
-        );
+        res.send(post);
     }
 
     static async addComment(req, res) {

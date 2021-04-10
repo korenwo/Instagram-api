@@ -72,7 +72,7 @@ class UsersController {
 				return;
 			}
 			const posts = await Post
-				.find({ user: user._id })
+				.find({ userId: user._id })
 				.populate('user', ['username', 'avatar']);
 			res.json(posts);
 		} catch (err) {
@@ -99,10 +99,10 @@ class UsersController {
 
     
     
-    static getAll(req, res) {
+    static async getAll(req, res) {
         const { username } = req.query;
 			try {
-                const users =  User.find({
+                const users = await User.find({
                     username: new RegExp(username, 'i')
                 });
                 res.json(users.map(user => ({
@@ -125,7 +125,7 @@ class UsersController {
             res.sendStatus(400);
             return;
         }
-        const user = await User.findOneAndUpdate(
+        const user = await User.findByIdAndUpdate(
             userId,
             {
                 $addToSet: {
@@ -140,12 +140,7 @@ class UsersController {
             res.sendStatus(404);
             return;
         }
-        res.send({
-            _id: user._id,
-            username: user.username,
-            avatar: user.avatar,
-            followers: user.followers
-        });
+        res.send(user);
     }
 
     static edit (req, res) {
