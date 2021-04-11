@@ -6,14 +6,17 @@ class PostsController {
 
     static async feed(req, res) {
         try {
-            const posts= await Post
-                .find()
-                .populate('userId', ['username', 'avatar'])
-                .sort({ createAt: req.query.sort})
-            res.send(posts);
+            const post= await Post
+                .findById(req.params.id)
+                .populate('user', ['username', 'avatar']);
+            if(!post) {
+                res.sendStatus(404);
+                return;
+            }
+            res.json(post);
         } catch(err) {
             console.log(err);
-            res.sendStatus(401);
+            res.sendStatus(500);
         }
     }
 
