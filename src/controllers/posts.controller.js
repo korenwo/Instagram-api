@@ -13,7 +13,7 @@ class PostsController {
             res.send(posts);
         } catch(err) {
             console.log(err);
-            res.sendStatus(400);
+            res.sendStatus(401);
         }
     }
 
